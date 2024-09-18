@@ -23,7 +23,13 @@ EthernetPacket::EthernetPacket(std::vector<uint8_t> srcMacAdress_,
 		numBytes = 1500;
 	}
 
-	payLoad = std::vector<uint8_t>(0, 1500);
+	payLoad = std::vector<uint8_t>(numBytes, payloadValue);
+	std::cout << "debuggin\n";
+	for (int i = 0; i < payLoad.size(); i++) {
+		std::cout << std::hex << payLoad[i];
+	}
+
+	etherType = etherType_;
 
 	//calculate the CRC here
 
@@ -33,20 +39,36 @@ std::vector<uint8_t> EthernetPacket::GetPacket() {
 	//this funciton just returns the packet
 	//pass
 	short int payLoadSize = payLoad.size();
-	packetResult = std::vector<uint8_t>(42 + payLoad.size());
+	std::cout <<"paylaod size is " << payLoadSize << "\n";
+	//dest adress
+	packetResult = std::vector<uint8_t>(18 + payLoad.size());
 	for (uint8_t i = 0; i < destMacAdress.size(); ++i) {
 		packetResult[0 + i] = destMacAdress[i];
 	}
+	//source adress
 	for (uint8_t i = 0; i < srcMacAdress.size(); ++i) {
-		packetResult[4 + i] = srcMacAdress[i];
+		packetResult[6 + i] = srcMacAdress[i];
 	}
+	/*for (uint8_t i = 0; i < srcMacAdress.size(); ++i) {
+		packetResult[8 + i] = & 0xFF;
+	}*/
+	//ether type
+	packetResult[12] = etherType & 0xFF;
+	packetResult[13] = (etherType >> 8) & 0xFF;
+
+	//payload 
 	for (uint8_t i = 0; i < payLoad.size(); ++i) {
-		packetResult[8 + i] = payLoad[i];
+		packetResult[14 + i] = payLoad[i];
 	}
-	for (uint8_t i = 0; i < payLoad.size(); ++i) {
-		packetResult[payLoadSize + 8 + i] = payLoad[i];
-	}
+	/*for (uint8_t i = 0; i < payLoad.size(); ++i) {
+		packetResult[payLoadSize + 10 + i] = payLoad[i];
+	}*/
 	//calaculate CRC
+	uint32_t crc = this->calculateCRC();
+	std::cout << std::hex  << "crc os " << crc << "\n";
+	for (uint8_t i = 0; i < 4; ++i) {
+		packetResult[payLoadSize + 14 + i] = (crc >> (24-8*(i)) & 0xff);
+	}
 	
 	return packetResult;
 }
@@ -75,7 +97,7 @@ uint32_t EthernetPacket::calculateCRC() {
 	}
 
 	// Finalize the CRC by inverting all the bits
-	crc = ~crc;
+	//crc = ~crc;
 
 	// Ensure CRC is within 32 bits
 	return crc & 0xFFFFFFFF;
