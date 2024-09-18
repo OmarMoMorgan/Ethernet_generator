@@ -15,7 +15,7 @@ private:
 	uint16_t etherType; //this is defeind as 16bits according to the standard 
 	std::vector<uint8_t> payLoad;
 	std::vector<uint8_t> generatePacket();
-	std::vector<uint8_t> calculateCRC();
+	uint32_t calculateCRC();
 
 	
 
