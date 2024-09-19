@@ -58,12 +58,13 @@ std::vector<uint8_t> EthernetPacket::GetPacket() {
 		packetResult[8 + i] = & 0xFF;
 	}*/
 	//ether type
-	packetResult[12] = etherType & 0xFF;
-	packetResult[13] = (etherType >> 8) & 0xFF;
+	packetResult[12] = (etherType >> 8) & 0xFF;
+	packetResult[13] = etherType & 0xFF;
 
 	//payload 
-	for (uint8_t i = 0; i < payLoad.size(); ++i) {
+	for (int i = 0; i < payLoad.size(); i++) {
 		packetResult[14 + i] = payLoad[i];
+		//std::cout << "done\n";
 	}
 	/*for (uint8_t i = 0; i < payLoad.size(); ++i) {
 		packetResult[payLoadSize + 10 + i] = payLoad[i];

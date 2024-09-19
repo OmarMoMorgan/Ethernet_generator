@@ -35,7 +35,7 @@ EthernetGenerator::EthernetGenerator() {
 	LineRate = 1;
 	captureSizeMs = 1;
 	minNumOfIFGsPerPacket = 1;
-	//srcMacAdress = std::vector<uint8_t>{};
+	srcMacAdress = { 0x01,0x01,0x01,0x01,0x00,0x00 };
 	destMacAdress = {0x00,0x00,0x00,0x00,0x00,0x00};
 	maxPacketSize = 1500;
 	BurstSize = 1;
@@ -50,6 +50,8 @@ EthernetGenerator::EthernetGenerator() {
 
 
 void EthernetGenerator::GeneratePacketsDump() {
+	TextParser parser = TextParser("readFile.txt" , "WriteFile.txt");
+	parser.OpenFileWrite("WriteFile.txt");
 	float time_elapsed = 0;
 	while (1) {
 		//the numbers below are generated basaed on nothing shoudl be modified
@@ -70,13 +72,15 @@ void EthernetGenerator::GeneratePacketsDump() {
 				//we exceded time should now quit
 				//first we need to determine where exactly we stopped 
 				int numBytesPossibleToSend = (remainingTime - time_needed) / byteRate;
-				int IFGadded_quitearly = AddIFG(numBytesPossibleToSend);
+				int IFGadded_quitEarly = AddIFG(numBytesPossibleToSend);
 				//write using another special function that only write till a specfic point and pads with ifg
+				parser.CloseFileWrite();
 				return;
 			}
 			time_elapsed += time_needed;
 
 			//write this should be done after making the text class 
+			parser.WriteWholePacket(packet_arr[i].GetPacket(), preamble_SFD, IFG, IFGadded);
 
 			//return
 		}

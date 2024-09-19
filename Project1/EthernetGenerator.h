@@ -2,6 +2,7 @@
 #include <vector>
 #include "EthernetPacket.h"
 #include "utilities.h"
+#include "TextParser.h"
 
 class EthernetGenerator
 {
