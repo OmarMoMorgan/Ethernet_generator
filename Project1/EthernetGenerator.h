@@ -15,7 +15,8 @@ private:
 	int BurstSize;
 	int BurstPeriodicty_us;
 	uint8_t IFG;
-	std::vector<uint8_t> preamble_SFD;
+	//std::vector<uint8_t>
+	uint64_t preamble_SFD;
 	float bitRate;
 	int numGenertedPackets;
 	float byteRate;
@@ -41,7 +42,7 @@ public:
 					  std::vector<uint8_t> preamble_SFD
 					  );
 
-	//EthernetGenerator();
+	EthernetGenerator();
 
 	void GeneratePacketsDump();
 

@@ -21,7 +21,7 @@
     <ClInclude Include="EthernetGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigureGenerator.h">
+    <ClInclude Include="TextParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utilities.h">
@@ -35,7 +35,7 @@
     <ClCompile Include="EthernetGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConfigureGenerator.cpp">
+    <ClCompile Include="TextParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">

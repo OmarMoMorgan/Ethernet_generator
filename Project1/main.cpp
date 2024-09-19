@@ -1,6 +1,7 @@
 #include "utilities.h"
 #include <iostream>
 #include "EthernetPacket.h"
+#include "EthernetGenerator.h"
 
 uint32_t calculateCRC(std::vector<uint8_t> payLoad) {
 	//this value is defined in standard
@@ -43,38 +44,38 @@ void printVector(const std::vector<T>& vec) {
 }
 
 
-int main()
-{
-
-	//std::vector<uint8_t> srcMacAdress(4, 0);
-	/*for (int x : defaultMacAdress)
-		std::cout << x << " ";*/
-
-	//make a simple class for testing 
-	std::cout << "\n";
-	std::vector<uint8_t> data = {0x02,0x02 ,0x02 ,0x02 ,0x02 };
-	//std::vector<uint8_t> data = { 5 };
-	uint32_t crc = calculateCRC(data);
-	for (int i = 0; i < data.size(); i++) {
-		std::cout << std::hex << data[i];
-	}
-	std::cout  << std::hex << crc;
-
-	std::vector<uint8_t> src = { 0,0,0,0  };
-	std::vector<uint8_t> dest = { 0,1,1,0 };
-	EthernetPacket etherpacket = EthernetPacket(src, dest, 0x02, 5, 0xffff);
-	std::vector<uint8_t> packet = etherpacket.GetPacket();
-	//printVector(packet);
-
-	std::cout << packet.size() << "\n";
-
-	for (size_t i = 0; i < packet.size(); ++i) {
-		std::cout << std::hex << (int)packet[i] << " ";
-	}
-
-
-	return 0;
-}
+//int main()
+//{
+//
+//	//std::vector<uint8_t> srcMacAdress(4, 0);
+//	/*for (int x : defaultMacAdress)
+//		std::cout << x << " ";*/
+//
+//	//make a simple class for testing 
+//	std::cout << "\n";
+//	std::vector<uint8_t> data = {0x02,0x02 ,0x02 ,0x02 ,0x02 };
+//	//std::vector<uint8_t> data = { 5 };
+//	uint32_t crc = calculateCRC(data);
+//	for (int i = 0; i < data.size(); i++) {
+//		std::cout << std::hex << data[i];
+//	}
+//	std::cout  << std::hex << crc;
+//
+//	std::vector<uint8_t> src = { 0,0,0,0  };
+//	std::vector<uint8_t> dest = { 0,1,1,0 };
+//	EthernetPacket etherpacket = EthernetPacket(src, dest, 0x02, 5, 0xffff);
+//	std::vector<uint8_t> packet = etherpacket.GetPacket();
+//	//printVector(packet);
+//
+//	std::cout << packet.size() << "\n";
+//
+//	for (size_t i = 0; i < packet.size(); ++i) {
+//		std::cout << std::hex << (int)packet[i] << " ";
+//	}
+//
+//
+//	return 0;
+//}
 
 
 //int main() {
@@ -96,3 +97,12 @@ int main()
 //	std::cout << (float)1e2;
 //	return 0;
 //}
+
+
+int main() {
+	EthernetGenerator generator = EthernetGenerator();
+	generator.GeneratePacketsDump();
+
+
+	return 0;
+}

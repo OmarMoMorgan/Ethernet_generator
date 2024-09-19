@@ -29,10 +29,10 @@ EthernetPacket::EthernetPacket(std::vector<uint8_t> srcMacAdress_,
 	}
 
 	payLoad = std::vector<uint8_t>(numBytes, payloadValue);
-	std::cout << "debuggin\n";
-	for (int i = 0; i < payLoad.size(); i++) {
-		std::cout << std::hex << payLoad[i];
-	}
+	//std::cout << "debuggin\n";
+	//for (int i = 0; i < payLoad.size(); i++) {
+	//	std::cout << std::hex << payLoad[i];
+	//}
 
 	etherType = etherType_;
 

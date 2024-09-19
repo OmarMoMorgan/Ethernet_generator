@@ -12,7 +12,9 @@ EthernetGenerator::EthernetGenerator(int lineRate_, int captureSizeMs_,
 	uint8_t IFG_,
 	std::vector<uint8_t> preamble_SFD_) {
 
+
 	LineRate = lineRate_;
+	captureSizeMs = captureSizeMs_;
 	minNumOfIFGsPerPacket = minNumOfIFGsPerPacket_;
 	srcMacAdress = srcMacAdress_;
 	destMacAdress = destMacAdress_;
@@ -20,12 +22,30 @@ EthernetGenerator::EthernetGenerator(int lineRate_, int captureSizeMs_,
 	BurstSize = BurstSize_;
 	BurstPeriodicty_us = BurstPeriodicty_us_;
 	IFG = IFG_;
-	preamble_SFD = preamble_SFD_;
+	//preamble_SFD = preamble_SFD_;
 
 	bitRate = LineRate;
 	numGenertedPackets = 0;
 	byteRate = LineRate * 1e9 / 8;
 
+}
+
+
+EthernetGenerator::EthernetGenerator() {
+	LineRate = 1;
+	captureSizeMs = 1;
+	minNumOfIFGsPerPacket = 1;
+	//srcMacAdress = std::vector<uint8_t>{};
+	destMacAdress = {0x00,0x00,0x00,0x00,0x00,0x00};
+	maxPacketSize = 1500;
+	BurstSize = 1;
+	BurstPeriodicty_us = 100;
+	IFG = 0x07;
+	preamble_SFD = 0xFB555555555555D;
+
+	bitRate = LineRate;
+	numGenertedPackets = 0;
+	byteRate = LineRate * 1e9 / 8;
 }
 
 
@@ -35,15 +55,16 @@ void EthernetGenerator::GeneratePacketsDump() {
 		//the numbers below are generated basaed on nothing shoudl be modified
 		EthernetPacket* packet_arr = new EthernetPacket[BurstSize];  //(srcMacAdress,destMacAdress,2,50,25);
 		for (int i = 0; i < BurstSize; i++) {
-			packet_arr[i] = EthernetPacket(srcMacAdress, destMacAdress, 2, 50, 25);
+			packet_arr[i] = EthernetPacket(srcMacAdress, destMacAdress, 2, maxPacketSize, 25);
 			int packet_size = packet_arr[0].GetPacketSize();
 			//add IFG(currently i am just determing how many of them will be written)
 			int IFGadded = AddIFG(packet_size);
 
 			
 
-			int time_needed = (packet_size + IFGadded) / byteRate;
-			int remainingTime = (captureSizeMs * 10e-3) - time_elapsed;
+			float time_needed = (packet_size + IFGadded) / byteRate;
+			float remainingTime = (captureSizeMs * 10e-3) - time_elapsed;
+			
 			//now check whether this packet can be fully sent or not 
 			if (remainingTime < time_needed) {
 				//we exceded time should now quit
@@ -53,11 +74,13 @@ void EthernetGenerator::GeneratePacketsDump() {
 				//write using another special function that only write till a specfic point and pads with ifg
 				return;
 			}
+			time_elapsed += time_needed;
 
 			//write this should be done after making the text class 
 
 			//return
 		}
+		time_elapsed += BurstPeriodicty_us * 1e-6;
 
 		//int numBytesInPacket= packet.GetPacketSize();
 		//delete packet_arr;
@@ -69,7 +92,7 @@ void EthernetGenerator::GeneratePacketsDump() {
 
 
 int EthernetGenerator::AddIFG(int packetSize) {
-	int extraIFG = 4 - (packetSize + minNumOfIFGsPerPacket % 4);
+	int extraIFG = 4 - ((packetSize + minNumOfIFGsPerPacket) % 4);
 	return minNumOfIFGsPerPacket + extraIFG;
 }
 

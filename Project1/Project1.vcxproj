@@ -127,13 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ConfigureGenerator.h" />
+    <ClInclude Include="TextParser.h" />
     <ClInclude Include="EthernetGenerator.h" />
     <ClInclude Include="EthernetPacket.h" />
     <ClInclude Include="utilities.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ConfigureGenerator.cpp" />
+    <ClCompile Include="TextParser.cpp" />
     <ClCompile Include="EthernetGenerator.cpp" />
     <ClCompile Include="EthernetPacket.cpp" />
     <ClCompile Include="main.cpp" />
