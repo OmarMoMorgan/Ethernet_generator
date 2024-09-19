@@ -24,6 +24,8 @@ public:
 	EthernetPacket(std::vector<uint8_t> srcMacAdress_, std::vector<uint8_t> destMacAdress_,
 		uint8_t payloadValue, int numBytes, uint16_t etherType_);  //this constructor will generate the same data
 	std::vector<uint8_t> GetPacket();
+	int GetPacketSize();
+	EthernetPacket();
 	
 };
 

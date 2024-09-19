@@ -90,3 +90,9 @@ int main()
 //
 //	return 0;
 //}
+
+
+//int main() {
+//	std::cout << (float)1e2;
+//	return 0;
+//}

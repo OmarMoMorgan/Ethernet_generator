@@ -2,6 +2,11 @@
 //#include "utilities.h"
 
 
+//dummy constructor
+EthernetPacket::EthernetPacket() {
+
+}
+
 EthernetPacket::EthernetPacket(std::vector<uint8_t> srcMacAdress_,
 							   std::vector<uint8_t> destMacAdress_,
 							   std::vector<uint8_t> payLoad_, 
@@ -102,6 +107,13 @@ uint32_t EthernetPacket::calculateCRC() {
 	// Ensure CRC is within 32 bits
 	return crc & 0xFFFFFFFF;
 
+}
+
+
+int EthernetPacket::GetPacketSize() {
+	//18 here is for the header size 
+	return 18 + payLoad.size();
+	
 }
 
 
