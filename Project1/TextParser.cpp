@@ -12,7 +12,8 @@ TextParser::TextParser() {
 }
 
 void TextParser::OpenFileRead(const std::string& filename) {
-    std::ifstream readFileStream(filename);
+    //std::ifstream readFileStream(filename);
+    readFileStream.open(filename);
     if (!readFileStream.is_open()) {
         std::cerr << "Error: Could not open file." << std::endl;
         return;
@@ -39,6 +40,8 @@ ethernet_Generation_data TextParser::ReadFromFile() {
 
     ethernet_Generation_data eth;
     uint64_t adress;
+    eth.destMacAdress = std::vector<uint8_t>(6);
+    eth.srcMacAdress = std::vector<uint8_t>(6);
 
     std::string line;
     while (std::getline(file, line)) {
@@ -160,5 +163,10 @@ void TextParser::WriteWholePacket(std::vector <uint8_t> packet_, uint64_t preamb
 
 void TextParser::CloseFileWrite() {
     WriteFileStream.close();
+    return;
+}
+
+void TextParser::CloseFileRead() {
+    readFileStream.close();
     return;
 }

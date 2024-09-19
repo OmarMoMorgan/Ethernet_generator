@@ -1,0 +1,8 @@
+Eth.LineRate = 10
+Eth.CaptureSizeMs = 10 //this is the time of generation, for example if it is 10 ms then 1 frame will be generated
+Eth.MinNumOfIFGsPerPacket = 12 //IFG is at the end of each packet after CRC, and e.g : if min number of ifgs is 3 then after each packet there should be 3 IFGs and you have to consider the alignment, so in this case if the packet is not 4 byte aligned we need to add extra IFGs) 0x07
+Eth.DestAddress =  0x010101010101
+Eth.SourceAddress = 0x333333333333
+Eth.MaxPacketSize  = 1500       // Packet size in bytes, includes the preamble, SoP, SRC Add, Dest Add, ether type, payload, and CRC, if the packet size exceeds this number then fragmentation should happen. 
+Eth.BurstSize = 3				// Number of ethernet packets in one burst
+Eth.BurstPeriodicity_us = 100   // The periodicity of the burst in microseconds

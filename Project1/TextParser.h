@@ -29,6 +29,7 @@ public:
 	void OpenFileRead(const std::string& filename);
 	void OpenFileWrite(const std::string& filename);
 	void CloseFileWrite();
+	void CloseFileRead();
 	//void ReadFile()
 };
 

@@ -100,7 +100,7 @@ void printVector(const std::vector<T>& vec) {
 
 
 int main() {
-	EthernetGenerator generator = EthernetGenerator();
+	EthernetGenerator generator = EthernetGenerator("first_milestone.txt" , "WriteFile.txt");
 	generator.GeneratePacketsDump();
 
 

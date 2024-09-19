@@ -104,3 +104,24 @@ int EthernetGenerator::AddIFG(int packetSize) {
 int EthernetGenerator::TimeToBytesSent() {
 	return 0;
 }
+
+
+EthernetGenerator::EthernetGenerator(std::string readFileName_ , std::string writeFileName_) {
+	TextParser reader = TextParser(readFileName_,writeFileName_);
+	ethernet_Generation_data eth_data = reader.ReadFromFile();
+	LineRate = eth_data.LineRate;
+	captureSizeMs = eth_data.captureSizeMs;
+	minNumOfIFGsPerPacket = eth_data.minNumOfIFGsPerPacket;
+	srcMacAdress = eth_data.srcMacAdress;
+	destMacAdress = eth_data.destMacAdress;
+	maxPacketSize = eth_data.maxPacketSize;
+	BurstSize = eth_data.BurstSize;
+	BurstPeriodicty_us = eth_data.BurstPeriodicty_us;
+	//IFG = eth_data.IFG;
+	//preamble_SFD = preamble_SFD_;
+	IFG = 0x07;
+	preamble_SFD = 0xFB555555555555D;
+	bitRate = LineRate;
+	numGenertedPackets = 0;
+	byteRate = LineRate * 1e9 / 8;
+}

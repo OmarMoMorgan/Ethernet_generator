@@ -44,6 +44,7 @@ public:
 					  );
 
 	EthernetGenerator();
+	EthernetGenerator(std::string readFileName_, std::string writeFileName_);
 
 	void GeneratePacketsDump();
 
