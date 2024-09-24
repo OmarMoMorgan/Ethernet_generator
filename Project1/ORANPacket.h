@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include "TextParser.h"
 
 class ORANPacket
 {
@@ -27,6 +28,8 @@ private:
 	std::vector<std::vector<uint8_t>> frameVector;
 	//make packet header
 	void MakeHeader(int packetID); //this will make the header for each packet
+	void MakeSmallHeader(int packetID);
+	void MakeIQPacketData(int packetID);
 	void ReadDataIntoVector(); //this will read the data that is coming from file
 
 	int frameID;
@@ -41,7 +44,8 @@ private:
 	int startPrbu; //this will change to be somehing to get passed to function
 	//int numPrbu; //same as above should be removed 
 
-
+	TextParser* parser; //this shoudl be intialized in consturcotr
+	int locationAtPacketGen;
 
 public:
 	ORANPacket(int scs_,
@@ -51,7 +55,7 @@ public:
 	int PayloadFile_);
 
 
-	void GeneratePackets();
+	std::vector<std::vector<uint8_t>> GeneratePackets();
 	//the current aproach i am thikning of is make the whole frame
 	//then send packet by packet when needed 
 	//the other approach i am thinking of is making 

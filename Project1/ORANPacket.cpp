@@ -39,6 +39,7 @@ int ORANPacket::getNumberPacketsPerFrame() {
 //dtermeine the packet size 
 void ORANPacket::MakeHeader(int packetID) {
 	//general packet header 
+	locationAtPacketGen = 0;
 	frameVector[packetID][0] = 0x00;
 	frameVector[packetID][1] = frameID;
 	frameVector[packetID][2] = ((subFrameID << 4) & 0xff) | (slotID >> 4) &0x0f;
@@ -46,18 +47,57 @@ void ORANPacket::MakeHeader(int packetID) {
 
 	//the header for every packet 
 	//consider tunring this into a function
-	frameVector[packetID][4] = sectionID << 8;
-	frameVector[packetID][5] = (sectionID & 0x0f) | rb << 3 | symInc << 2 | ((startPrbu << 8)& 0x03);
-	frameVector[packetID][6] = startPrbu << 8;
-	frameVector[packetID][7] = numPrbu;
+	
 
 	//frameVector[0][2] = 0;
+	locationAtPacketGen = 4;
+}
+
+void ORANPacket::MakeSmallHeader(int packetID) {
+	/*frameVector[packetID][4] = sectionID << 8;
+	frameVector[packetID][5] = (sectionID & 0x0f) | rb << 3 | symInc << 2 | ((startPrbu << 8) & 0x03);
+	frameVector[packetID][6] = startPrbu << 8;
+	frameVector[packetID][7] = numPrbu;
+	locationAtPacketGen = 8;*/
+
+	frameVector[packetID][locationAtPacketGen] = sectionID << 8;
+	frameVector[packetID][locationAtPacketGen+1] = (sectionID & 0x0f) | rb << 3 | symInc << 2 | ((startPrbu << 8) & 0x03);
+	frameVector[packetID][locationAtPacketGen+2] = startPrbu << 8;
+	frameVector[packetID][locationAtPacketGen+3] = numPrbu;
+	locationAtPacketGen = locationAtPacketGen + 4;
+
+}
+
+//this function will get the iq data and put it insdie the packet 
+void ORANPacket::MakeIQPacketData(int packetID) {
+	//parser->OpenFileIQ(); //this line should also be aboeve in constructor
+	std::vector<uint8_t> dataRead = parser->ReadIQData(12); //12 is choosed according to standard
+	for (int i = 0; i < (12 * 4 ); i++) {
+		frameVector[packetID][i + locationAtPacketGen] = dataRead[i];
+	}
+	locationAtPacketGen = locationAtPacketGen + (12 * 4);
+
 }
 
 
-void ORANPacket::GeneratePackets() {
-	//call the text parser to get the data
+std::vector<std::vector<uint8_t>> ORANPacket::GeneratePackets() {
+	//this is the maestor of generating the frame and oran packets
+	int numPackets = getNumberPacketsPerFrame();
+	int nrbUsed = 0;
+	for(int i=0;i<numPackets;i++) {
+		//make the header first of the whole thing 
+		MakeHeader(i);
+		//get the number of how many rb will be used per packet
+		for (int j = 0; j < NrbPerPacket; j++) {
+			//this method is not the best computatiaonally but for now will leave it like this
+			if (nrbUsed > maxNrb) {
+				return frameVector;
+			}
 
-
-
+			MakeSmallHeader(j);
+			MakeIQPacketData(j);
+			nrbUsed++;
+		}
+	}
+	return frameVector;
 }
