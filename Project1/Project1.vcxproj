@@ -127,12 +127,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="EcpriPacket.h" />
+    <ClInclude Include="ORANPacket.h" />
     <ClInclude Include="TextParser.h" />
     <ClInclude Include="EthernetGenerator.h" />
     <ClInclude Include="EthernetPacket.h" />
     <ClInclude Include="utilities.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EcpriPacket.cpp" />
+    <ClCompile Include="ORANPacket.cpp" />
     <ClCompile Include="TextParser.cpp" />
     <ClCompile Include="EthernetGenerator.cpp" />
     <ClCompile Include="EthernetPacket.cpp" />

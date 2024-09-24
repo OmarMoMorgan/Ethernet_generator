@@ -39,7 +39,7 @@ private:
 	int numPrbu; // also will leave it as aconstant for now	
 
 	int startPrbu; //this will change to be somehing to get passed to function
-	int numPrbu; //same as above should be removed 
+	//int numPrbu; //same as above should be removed 
 
 
 

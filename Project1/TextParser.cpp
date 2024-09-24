@@ -7,6 +7,12 @@ TextParser::TextParser(std::string readFile_, std::string dumpFile_) {
 
 }
 
+TextParser::TextParser(std::string readFile_, std::string dumpFile_ , std::string IQFile_) {
+    readFile = readFile_;
+    dumpFile = dumpFile_;
+    IQFile = IQFile_;
+}
+
 TextParser::TextParser() {
 
 }
@@ -15,6 +21,15 @@ void TextParser::OpenFileRead(const std::string& filename) {
     //std::ifstream readFileStream(filename);
     readFileStream.open(filename);
     if (!readFileStream.is_open()) {
+        std::cerr << "Error: Could not open file." << std::endl;
+        return;
+    }
+    return;
+}
+
+void TextParser::OpenFileIQ(const std::string& filename) {
+    readIQData.open(filename);
+    if (!readIQData.is_open()) {
         std::cerr << "Error: Could not open file." << std::endl;
         return;
     }
@@ -157,6 +172,39 @@ void TextParser::WriteWholePacket(std::vector <uint8_t> packet_, uint64_t preamb
    
 
     //file.close();
+}
+
+
+//this function is reposnsible for reading the iq data
+std::vector<uint8_t> TextParser::ReadIQData(int numLinesToRead) {
+    //the paramter given above is to make sure
+    //that we dont get an overlap of lines
+    std::vector<uint8_t> dataRead(numLinesToRead*4);
+    int linesRead = 0;
+    std::string line;
+    
+    int val1, val2;
+    //iss >> decimalValue1 >> decimalValue2;
+    while (linesRead < numLinesToRead) {
+        while (std::getline(readIQData, line)) {
+            //data.push_back(parseDecimalLine(line));
+            std::istringstream iss(line);
+            iss >> val1 >> val2;
+            dataRead[linesRead * 2] = val1 >> 8;
+            dataRead[linesRead * 2 + 1] = val1 & 0x0ff;
+            dataRead[linesRead * 2 + 2] = val2 >> 8;
+            dataRead[linesRead * 2 + 3] = val2 & 0x0ff;
+            linesRead++;
+            if (linesRead >= numLinesToRead) break;
+        }
+        // If end of file is reached, reset the stream to start reading again
+        if (readIQData.eof()) {
+            readIQData.clear();   // Clear EOF flag
+            readIQData.seekg(0);  // Rewind the file to the beginning
+        }
+    }
+    return dataRead;
+
 }
 
 

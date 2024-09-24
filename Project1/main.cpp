@@ -93,16 +93,23 @@ void printVector(const std::vector<T>& vec) {
 //}
 
 
-//int main() {
-//	std::cout << (float)1e2;
-//	return 0;
-//}
-
-
 int main() {
-	EthernetGenerator generator = EthernetGenerator("first_milestone.txt" , "WriteFile.txt");
-	generator.GeneratePacketsDump();
-
-
+	//std::cout << (float)1e2;
+	//EthernetGenerator generator = EthernetGenerator("first_milestone.txt", "WriteFile.txt");
+	TextParser parser = TextParser("readFile.txt", "WriteFile.txt" , "iq_file.txt");
+	parser.OpenFileIQ("iq_file.txt");
+	std::vector<uint8_t> data = parser.ReadIQData(10);
+	for (int i = 0; i < 9; i++) {
+		std::cout << std::hex <<  data[i];
+	}
 	return 0;
 }
+
+
+//int main() {
+//	EthernetGenerator generator = EthernetGenerator("first_milestone.txt" , "WriteFile.txt");
+//	generator.GeneratePacketsDump();
+//
+//
+//	return 0;
+//}
