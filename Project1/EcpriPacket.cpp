@@ -9,7 +9,7 @@ std::vector<uint8_t> EcpriPacket::GetEcpri(std::vector<uint8_t> &ORANpack) {
 	int payloadSize = ORANpack.size();
 	
 	std::vector<uint8_t> ecpriPacket(headerSize+payloadSize,payloadSize);
-	//just add the payload here this solution is really stupid for now
+	//just add the payload here, this solution is really stupid for now
 
 	for (int i = 0; i < payloadSize; i++) {
 		ecpriPacket[8 + i] = ORANpack[i];

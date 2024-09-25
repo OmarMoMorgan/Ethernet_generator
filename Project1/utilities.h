@@ -14,6 +14,16 @@ struct ethernet_Generation_data {
 	int maxPacketSize;
 	int BurstSize;
 	int BurstPeriodicty_us;
+
+	//this variables should be removed later
+	//ORAN stuff
+	int SCS;
+	int MaxNrb;
+	int NrbPerPacket;
+	std::string PayloadType;
+	int Payload;
+	 
+	
 	//uint8_t IFG;
 	//std::vector<uint8_t> preamble_SFD;
 	//float bitRate;

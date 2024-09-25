@@ -46,6 +46,10 @@ void TextParser::OpenFileWrite(const std::string& filename) {
     
 }
 
+//I will do something here that is not optimized 
+//but will ignore it for now 
+//which is i will add the other data for the ehternet structure 
+//this is faster inimplementing but slower 
 ethernet_Generation_data TextParser::ReadFromFile() {
     std::ifstream file(readFile);
     if (!file.is_open()) {
@@ -110,6 +114,22 @@ ethernet_Generation_data TextParser::ReadFromFile() {
         }
         else if (key == "Eth.BurstPeriodicity_us") {
             iss >> eth.BurstPeriodicty_us;
+        }
+        //ORAN stuff
+        else if (key == "Oran.SCS") {
+            iss >> eth.SCS;
+        }
+        else if (key == "Oran.MaxNrb") {
+            iss >> eth.MaxNrb;
+        }
+        else if (key == "Oran.NrbPerPacket") {
+            iss >> eth.NrbPerPacket;
+        }
+        else if (key == "Oran.PayloadType") {
+            iss >> eth.PayloadType;
+        }
+        else if (key == "Oran.Payload") {
+            iss >> eth.Payload;
         }
         else {
             std::cerr << "Warning: Unknown variable " << key << " in line: " << line << std::endl;

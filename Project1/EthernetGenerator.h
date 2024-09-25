@@ -47,6 +47,7 @@ public:
 	EthernetGenerator(std::string readFileName_, std::string writeFileName_);
 
 	void GeneratePacketsDump();
+	void GeneratePacketsWithORAN();
 
 	int AddIFG(int packetSize);
 

@@ -95,6 +95,13 @@ void EthernetGenerator::GeneratePacketsDump() {
 }
 
 
+void EthernetGenerator::GeneratePacketsWithORAN() {
+	//this function will do what we have doen above except now
+	//we have ORAN packets so we will generate them here
+	//encasulate them in ecpri and 
+}
+
+
 int EthernetGenerator::AddIFG(int packetSize) {
 	int extraIFG = 4 - ((packetSize + minNumOfIFGsPerPacket) % 4);
 	return minNumOfIFGsPerPacket + extraIFG;

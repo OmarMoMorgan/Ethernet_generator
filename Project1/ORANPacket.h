@@ -30,7 +30,7 @@ private:
 	void MakeHeader(int packetID); //this will make the header for each packet
 	void MakeSmallHeader(int packetID);
 	void MakeIQPacketData(int packetID);
-	void ReadDataIntoVector(); //this will read the data that is coming from file
+	//void ReadDataIntoVector(); //this will read the data that is coming from file
 
 	int frameID;
 	int subFrameID;
@@ -62,7 +62,7 @@ public:
 	//a packet by packet when requested 
 	//make this class only make the frame and when you want another one make another 
 	//frame 
-	void GetNextPacket();
+	//void GetNextPacket();
 
 
 };
