@@ -74,7 +74,7 @@ void EthernetGenerator::GeneratePacketsDump() {
 				int numBytesPossibleToSend = (remainingTime - time_needed) / byteRate;
 				int IFGadded_quitEarly = AddIFG(numBytesPossibleToSend);
 				//write using another special function that only write till a specfic point and pads with ifg
-				parser.WritePacketTill(ethPacket.GetPacket(), preamble_SFD, IFG, IFGadded, numBytesPossibleToSend);
+				parser.WritePacketTill(packet_arr[i].GetPacket(), preamble_SFD, IFG, IFGadded, numBytesPossibleToSend);
 				parser.CloseFileWrite();
 				return;
 			}
