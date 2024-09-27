@@ -35,6 +35,7 @@ public:
 	void CloseFileWrite();
 	void CloseFileRead();
 	void OpenFileIQ(const std::string& filename);
+	void CloseFileIQ();
 	std::vector<uint8_t> ReadIQData(int linesToRead);
 	//void ReadFile()
 };

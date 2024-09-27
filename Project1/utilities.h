@@ -21,7 +21,7 @@ struct ethernet_Generation_data {
 	int MaxNrb;
 	int NrbPerPacket;
 	std::string PayloadType;
-	int Payload;
+	std::string Payload;
 	 
 	
 	//uint8_t IFG;

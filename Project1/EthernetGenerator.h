@@ -3,6 +3,9 @@
 #include "EthernetPacket.h"
 #include "utilities.h"
 #include "TextParser.h"
+#include <cmath>
+#include "ORANPacket.h"
+#include "EcpriPacket.h"
 
 class EthernetGenerator
 {
@@ -21,6 +24,13 @@ private:
 	float bitRate;
 	int numGenertedPackets;
 	float byteRate;
+
+	//this varilables are for oran should be moved later on
+	int SCS;
+	int MaxNrb;
+	int NrbPerPacket;
+	std::string PayloadType;
+	std::string Payload;
 
 	std::vector<EthernetPacket> packetsList;
 	//std::vector<float> packetsTimeList;

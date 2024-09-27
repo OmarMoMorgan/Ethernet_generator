@@ -93,15 +93,29 @@ void printVector(const std::vector<T>& vec) {
 //}
 
 
+//int main() {
+//	//std::cout << (float)1e2;
+//	//EthernetGenerator generator = EthernetGenerator("first_milestone.txt", "WriteFile.txt");
+//	TextParser parser = TextParser("readFile.txt", "WriteFile.txt" , "iq_file.txt");
+//	parser.OpenFileIQ("iq_file.txt");
+//	std::vector<uint8_t> data = parser.ReadIQData(10);
+//	for (int i = 0; i < 9; i++) {
+//		std::cout << std::hex <<  data[i];
+//	}
+//	return 0;
+//}
+
+int ORANPacket::frameID = 0;
 int main() {
-	//std::cout << (float)1e2;
-	//EthernetGenerator generator = EthernetGenerator("first_milestone.txt", "WriteFile.txt");
-	TextParser parser = TextParser("readFile.txt", "WriteFile.txt" , "iq_file.txt");
-	parser.OpenFileIQ("iq_file.txt");
-	std::vector<uint8_t> data = parser.ReadIQData(10);
-	for (int i = 0; i < 9; i++) {
-		std::cout << std::hex <<  data[i];
-	}
+	EthernetGenerator generator = EthernetGenerator("second_milstone.txt", "WriteFile.txt");
+	generator.GeneratePacketsWithORAN();
+
+	//TextParser pars = TextParser("readFile.txt", "WriteFile.txt", "iq_file.txt");
+	//pars.OpenFileIQ("iq_file.txt");
+
+	//pars.OpenFileIQ("iq_file.txt");
+	//std::ifstream readIQData;
+	//readIQData.open("iq_file.txt");
 	return 0;
 }
 

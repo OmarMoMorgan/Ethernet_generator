@@ -13,8 +13,8 @@ private:
 	int scs;
 	int maxNrb;
 	int NrbPerPacket;
-	int payLoadType;
-	int PayloadFile;
+	std::string payLoadType;
+	std::string PayloadFile;
 	static int packetNumber;
 	void getNumerology();
 	int getNumberPacketsPerFrame();
@@ -32,7 +32,7 @@ private:
 	void MakeIQPacketData(int packetID);
 	//void ReadDataIntoVector(); //this will read the data that is coming from file
 
-	int frameID;
+	static int frameID;
 	int subFrameID;
 	int slotID;
 	int symbolID;
@@ -51,9 +51,11 @@ public:
 	ORANPacket(int scs_,
 	int maxNrb_,
 	int NrbPerPacket_,
-	int payLoadType_,
-	int PayloadFile_);
+	std::string payLoadType_,
+	std::string PayloadFile_,
+	TextParser* parser_);
 
+	ORANPacket();
 
 	std::vector<std::vector<uint8_t>> GeneratePackets();
 	//the current aproach i am thikning of is make the whole frame
@@ -66,4 +68,5 @@ public:
 
 
 };
+
 

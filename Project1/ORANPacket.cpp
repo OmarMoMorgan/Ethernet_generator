@@ -5,8 +5,9 @@
 ORANPacket::ORANPacket(int scs_,
 	int maxNrb_,
 	int NrbPerPacket_,
-	int payLoadType_,
-	int PayloadFile_) {
+	std::string payLoadType_,
+	std::string PayloadFile_,
+	TextParser* parser_) {
 
 
 	scs = scs_;
@@ -14,13 +15,19 @@ ORANPacket::ORANPacket(int scs_,
 	NrbPerPacket = NrbPerPacket_;
 	payLoadType = payLoadType_;
 	PayloadFile = PayloadFile_;
+	frameID++;
 	getNumerology();
 	//determine the pacekts in a vecotr that will contaitn a vector of vectors
 	frameVector = std::vector<std::vector<uint8_t>>(getNumberPacketsPerFrame());
+	parser = parser_;
+	parser->OpenFileIQ(PayloadFile);
+}
+
+ORANPacket::ORANPacket() {
 }
 
 void ORANPacket::getNumerology() {
-	mu = scs / 15;
+	mu = (scs / 15)-1;
 	if (mu > 6 || mu < 0) {
 		std::cout << "there is an error in the scs value assuming scs is 15";
 		scs = 15;
@@ -33,17 +40,24 @@ void ORANPacket::getNumerology() {
 
 
 int ORANPacket::getNumberPacketsPerFrame() {
-	return 14 * SymbolsCount * maxNrb / NrbPerPacket;
+	int num =  SymbolsCount* ceil((float)maxNrb / (float)NrbPerPacket);
+	return num;
 }
 
 //dtermeine the packet size 
 void ORANPacket::MakeHeader(int packetID) {
 	//general packet header 
 	locationAtPacketGen = 0;
-	frameVector[packetID][0] = 0x00;
+	/*frameVector[packetID][0] = 0x00;
 	frameVector[packetID][1] = frameID;
 	frameVector[packetID][2] = ((subFrameID << 4) & 0xff) | (slotID >> 4) &0x0f;
 	frameVector[packetID][3] = ((slotID << 6) & 0xc0) | (symbolID);
+	*/
+
+	frameVector[packetID].push_back(0x00);
+	frameVector[packetID].push_back(frameID);
+	frameVector[packetID].push_back(((subFrameID << 4) & 0xff) | (slotID >> 4) & 0x0f);
+	frameVector[packetID].push_back(((slotID << 6) & 0xc0) | (symbolID));
 
 	//the header for every packet 
 	//consider tunring this into a function
@@ -60,11 +74,17 @@ void ORANPacket::MakeSmallHeader(int packetID) {
 	frameVector[packetID][7] = numPrbu;
 	locationAtPacketGen = 8;*/
 
-	frameVector[packetID][locationAtPacketGen] = sectionID << 8;
+	/*frameVector[packetID][locationAtPacketGen] = sectionID << 8;
 	frameVector[packetID][locationAtPacketGen+1] = (sectionID & 0x0f) | rb << 3 | symInc << 2 | ((startPrbu << 8) & 0x03);
 	frameVector[packetID][locationAtPacketGen+2] = startPrbu << 8;
 	frameVector[packetID][locationAtPacketGen+3] = numPrbu;
+	*/
 	locationAtPacketGen = locationAtPacketGen + 4;
+	frameVector[packetID].push_back(sectionID << 8);
+	frameVector[packetID].push_back((sectionID & 0x0f) | rb << 3 | symInc << 2 | ((startPrbu << 8) & 0x03));
+	frameVector[packetID].push_back(startPrbu << 8);
+	frameVector[packetID].push_back(numPrbu);
+
 
 }
 
@@ -73,7 +93,8 @@ void ORANPacket::MakeIQPacketData(int packetID) {
 	//parser->OpenFileIQ(); //this line should also be aboeve in constructor
 	std::vector<uint8_t> dataRead = parser->ReadIQData(12); //12 is choosed according to standard
 	for (int i = 0; i < (12 * 4 ); i++) {
-		frameVector[packetID][i + locationAtPacketGen] = dataRead[i];
+		//frameVector[packetID][i + locationAtPacketGen] = dataRead[i];
+		frameVector[packetID].push_back(dataRead[i]);
 	}
 	locationAtPacketGen = locationAtPacketGen + (12 * 4);
 
@@ -85,19 +106,23 @@ std::vector<std::vector<uint8_t>> ORANPacket::GeneratePackets() {
 	int numPackets = getNumberPacketsPerFrame();
 	int nrbUsed = 0;
 	for(int i=0;i<numPackets;i++) {
+		
 		//make the header first of the whole thing 
 		MakeHeader(i);
 		//get the number of how many rb will be used per packet
+		//this is per symbol
 		for (int j = 0; j < NrbPerPacket; j++) {
 			//this method is not the best computatiaonally but for now will leave it like this
-			if (nrbUsed > maxNrb) {
-				return frameVector;
+			if (nrbUsed >= maxNrb) {
+				nrbUsed = 0;
+				break;
 			}
 
-			MakeSmallHeader(j);
-			MakeIQPacketData(j);
+			MakeSmallHeader(i);
+			MakeIQPacketData(i);
 			nrbUsed++;
 		}
 	}
+	parser->CloseFileIQ();
 	return frameVector;
 }

@@ -12,7 +12,16 @@ EthernetPacket::EthernetPacket(std::vector<uint8_t> srcMacAdress_,
 							   std::vector<uint8_t> payLoad_, 
 							   uint8_t etherType_) 
 {
+	srcMacAdress = std::vector<uint8_t>(4);
+	destMacAdress = std::vector<uint8_t>(4);
 
+	srcMacAdress = srcMacAdress_;
+	destMacAdress = destMacAdress_;
+	
+	payLoad = payLoad_;
+
+
+	etherType = etherType_;
 }
 EthernetPacket::EthernetPacket(std::vector<uint8_t> srcMacAdress_,
 	std::vector<uint8_t> destMacAdress_,

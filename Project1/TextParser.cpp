@@ -195,6 +195,8 @@ void TextParser::WriteWholePacket(std::vector <uint8_t> packet_, uint64_t preamb
 }
 
 
+
+
 //this function is reposnsible for reading the iq data
 std::vector<uint8_t> TextParser::ReadIQData(int numLinesToRead) {
     //the paramter given above is to make sure
@@ -236,5 +238,10 @@ void TextParser::CloseFileWrite() {
 
 void TextParser::CloseFileRead() {
     readFileStream.close();
+    return;
+}
+
+void TextParser::CloseFileIQ() {
+    readIQData.close();
     return;
 }

@@ -10,7 +10,8 @@ private:
 public:
 	EcpriPacket();
 	std::vector<uint8_t> GetEcpri(std::vector<uint8_t> &ORANpack); //this function will take a vector and convert it to ecpri
-	std::vector<uint8_t> addEcpriHeader(std::vector<uint8_t>& emptyEcpri, int payloadSize);
+	void addEcpriHeader(std::vector<uint8_t>& emptyEcpri, int payloadSize);
+
 
 };
 
