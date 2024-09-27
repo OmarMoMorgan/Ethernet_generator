@@ -194,7 +194,74 @@ void TextParser::WriteWholePacket(std::vector <uint8_t> packet_, uint64_t preamb
     //file.close();
 }
 
+void TextParser::WritePacketTill(std::vector <uint8_t> packet_, uint64_t preamble, uint8_t IFG_val, int numIFG,int stopByte) {
+    std::vector<uint8_t> wholeData(packet_.size() +8 + numIFG);
 
+    for (int i = 0; i < 8; i++) {
+        wholeData[0] = preamble >> (64 - (i + 1) * 8) & 0xff;
+    }
+
+    wholeData.insert(wholeData.end(), packet_.begin(), packet_.end());
+
+    //print till this vecotr gets done 
+    int counter = 0;
+    int outerLloop = wholeData.size() - (wholeData.size() % 4);
+    for (size_t i = 0; i < outerLloop; i += 4) {
+        for (size_t j = 0; j < 4 && (i + j) < stopByte; ++j) {
+            WriteFileStream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(packet_[i + j]);
+            counter++;
+        }
+        if (counter >= stopByte) {
+            break;
+        }
+        WriteFileStream << std::endl;
+    }
+
+    //get the ifg that needs to be added
+    int ifgsend = 4 - (stopByte % 4);
+    for (size_t j = 0; j < ifgsend; ++j) {
+        WriteFileStream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(IFG_val);
+    }
+    WriteFileStream << std::endl;
+    return;
+
+    
+    
+    //for (size_t i = 0; i < 4; i++) {
+    //    WriteFileStream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(preamble >> (64 - (i + 1) * 8) & 0xff);
+    //}
+    //WriteFileStream << std::endl;
+    //for (size_t i = 4; i < 8; i++) {
+    //    WriteFileStream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(preamble >> (64 - (i + 1) * 8) & 0xff);
+    //}
+    ////file << std::hex << static_cast<int>(IFG_val);
+    //WriteFileStream << std::endl;
+    //// Loop through packet_
+    //int outerLloop = packet_.size() - (packet_.size() % 4);
+    //for (size_t i = 0; i < outerLloop; i += 4) {
+    //    for (size_t j = 0; j < 4 && (i + j) < packet_.size(); ++j) {
+    //        WriteFileStream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(packet_[i + j]);
+    //    }
+    //    WriteFileStream << std::endl;
+    //}
+    ////writing the last n bytes
+    //int extraPacketBytes = packet_.size() % 4;
+    //for (size_t j = 0; j < extraPacketBytes; j++) {
+    //    WriteFileStream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(packet_[outerLloop + j]);
+    //}
+    ////start writing IFG till they align again
+    //for (size_t j = 0; j < 4 - extraPacketBytes; j++) {
+    //    WriteFileStream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(IFG_val);
+    //}
+    //WriteFileStream << std::endl;
+    //for (size_t i = 0; i < numIFG - extraPacketBytes; i += 4) {
+    //    for (size_t j = 0; j < 4 && (i + j) < numIFG; ++j) {
+    //        WriteFileStream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(IFG_val);
+    //    }
+    //    WriteFileStream << std::endl;
+    //}
+
+}
 
 
 //this function is reposnsible for reading the iq data
