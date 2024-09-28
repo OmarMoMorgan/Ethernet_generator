@@ -28,6 +28,9 @@ void TextParser::OpenFileRead(const std::string& filename) {
 }
 
 void TextParser::OpenFileIQ(const std::string& filename) {
+    if (readIQData.is_open()) {
+        return;
+    }
     readIQData.open(filename);
     if (!readIQData.is_open()) {
         std::cerr << "Error: Could not open file." << std::endl;
@@ -58,7 +61,7 @@ ethernet_Generation_data TextParser::ReadFromFile() {
     }
 
     ethernet_Generation_data eth;
-    uint64_t adress;
+    std::string adress;
     eth.destMacAdress = std::vector<uint8_t>(6);
     eth.srcMacAdress = std::vector<uint8_t>(6);
 
@@ -96,15 +99,17 @@ ethernet_Generation_data TextParser::ReadFromFile() {
         }
         else if (key == "Eth.DestAddress") {
             iss >> adress;
-            for (int i = 0; i < 6; i++) {
-                eth.destMacAdress[i] = (adress >> (48 - 8 * (i)) & 0xff);
-            }
+            eth.destMacAdress = stringToHex(adress); 
+            //for (int i = 0; i < 6; i++) {
+            //    eth.destMacAdress[i] = (adress >> (48 - 8 * (i)) & 0xff);
+            //}
         }
         else if (key == "Eth.SourceAddress") {
             iss >> adress;
-            for (int i = 0; i < 6; i++) {
-                eth.srcMacAdress[i] = (adress >> (48 - 8 * (i)) & 0xff);
-            }
+            eth.srcMacAdress = stringToHex(adress);
+            //for (int i = 0; i < 6; i++) {
+            //    eth.srcMacAdress[i] = (adress >> (48 - 8 * (i)) & 0xff);
+            //}
         }
         else if (key == "Eth.MaxPacketSize") {
             iss >> eth.maxPacketSize;
@@ -279,10 +284,10 @@ std::vector<uint8_t> TextParser::ReadIQData(int numLinesToRead) {
             //data.push_back(parseDecimalLine(line));
             std::istringstream iss(line);
             iss >> val1 >> val2;
-            dataRead[linesRead * 2] = val1 >> 8;
-            dataRead[linesRead * 2 + 1] = val1 & 0x0ff;
-            dataRead[linesRead * 2 + 2] = val2 >> 8;
-            dataRead[linesRead * 2 + 3] = val2 & 0x0ff;
+            dataRead[linesRead * 4] = val1 >> 8;
+            dataRead[linesRead * 4 + 1] = val1 & 0x0ff;
+            dataRead[linesRead * 4 + 2] = val2 >> 8;
+            dataRead[linesRead * 4 + 3] = val2 & 0x0ff;
             linesRead++;
             if (linesRead >= numLinesToRead) break;
         }
@@ -311,4 +316,38 @@ void TextParser::CloseFileRead() {
 void TextParser::CloseFileIQ() {
     readIQData.close();
     return;
+}
+
+
+
+void TextParser::WriteVector(std::vector<uint8_t> data) {
+    int outerLloop = data.size() - (data.size() % 4);
+    for (size_t i = 0; i < outerLloop; i += 4) {
+        for (size_t j = 0; j < 4 && (i + j) < data.size(); ++j) {
+            WriteFileStream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(data[i + j]);
+        }
+        WriteFileStream << std::endl;
+    }
+
+
+    return;
+}
+
+
+
+//helper funciton to convert hex values 
+std::vector<uint8_t> TextParser::stringToHex(const std::string& hexStr) {
+    std::vector<uint8_t> result;
+
+    // Remove the "0x" prefix from the string
+    std::string cleanHexStr = hexStr.substr(2);
+
+    // Iterate over the string, converting every two characters into a byte
+    for (size_t i = 0; i < cleanHexStr.length(); i += 2) {
+        std::string byteString = cleanHexStr.substr(i, 2);
+        uint8_t byte = static_cast<uint8_t>(std::stoul(byteString, nullptr, 16));
+        result.push_back(byte);
+    }
+
+    return result;
 }

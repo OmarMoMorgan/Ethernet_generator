@@ -6,5 +6,6 @@ project descirption: this project aims to make an ethernet packet generator, tho
 how to run:
 to run this proejct ,it is advisable to have visual studio 2022 installed 
 
-curretnly this is only milestone 1 which is having ethernet packets but it is not fully optmized yet 
-
+this is milestone 2 but the code is not fully optimized due to other personal commitments with other proejcts
+but could be modified isa with more stuff to make the crc faster, and add some more bonus features 
+that could help the project 

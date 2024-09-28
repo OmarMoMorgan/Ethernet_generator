@@ -127,3 +127,101 @@ int main() {
 //
 //	return 0;
 //}
+
+
+//#include <iostream>
+//#include <vector>
+//#include <winsock2.h>    // Winsock header
+//#include <ws2tcpip.h>    // For inet_ntop
+//#pragma comment(lib, "Ws2_32.lib")  // Link with Ws2_32.lib
+//
+//#define BUFFER_SIZE 1024  // Buffer size for receiving data
+//
+//int main() {
+//    // Server details
+//    const int server_port = 8080;   // Example port
+//
+//    // Step 1: Initialize Winsock
+//    WSADATA wsaData;
+//    int wsaStartupResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+//    if (wsaStartupResult != 0) {
+//        std::cerr << "WSAStartup failed: " << wsaStartupResult << std::endl;
+//        return -1;
+//    }
+//
+//    // Step 2: Create socket
+//    SOCKET server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+//    if (server_socket == INVALID_SOCKET) {
+//        std::cerr << "Socket creation failed: " << WSAGetLastError() << std::endl;
+//        WSACleanup();
+//        return -1;
+//    }
+//
+//    // Step 3: Bind the socket to a port
+//    struct sockaddr_in server_address;
+//    server_address.sin_family = AF_INET;
+//    server_address.sin_addr.s_addr = INADDR_ANY;  // Listen on all interfaces
+//    server_address.sin_port = htons(server_port); // Convert port to network byte order
+//
+//    if (bind(server_socket, (struct sockaddr*)&server_address, sizeof(server_address)) == SOCKET_ERROR) {
+//        std::cerr << "Bind failed: " << WSAGetLastError() << std::endl;
+//        closesocket(server_socket);
+//        WSACleanup();
+//        return -1;
+//    }
+//
+//    // Step 4: Listen for incoming connections
+//    if (listen(server_socket, SOMAXCONN) == SOCKET_ERROR) {
+//        std::cerr << "Listen failed: " << WSAGetLastError() << std::endl;
+//        closesocket(server_socket);
+//        WSACleanup();
+//        return -1;
+//    }
+//
+//    std::cout << "Server is listening on port " << server_port << std::endl;
+//
+//    // Step 5: Accept a client connection
+//    SOCKET client_socket;
+//    struct sockaddr_in client_address;
+//    int client_address_len = sizeof(client_address);
+//    client_socket = accept(server_socket, (struct sockaddr*)&client_address, &client_address_len);
+//    if (client_socket == INVALID_SOCKET) {
+//        std::cerr << "Accept failed: " << WSAGetLastError() << std::endl;
+//        closesocket(server_socket);
+//        WSACleanup();
+//        return -1;
+//    }
+//
+//    std::cout << "Client connected!" << std::endl;
+//
+//    // Step 6: Receive data from the client
+//    char buffer[BUFFER_SIZE];
+//    int bytes_received = recv(client_socket, buffer, BUFFER_SIZE, 0);
+//    if (bytes_received == SOCKET_ERROR) {
+//        std::cerr << "Receive failed: " << WSAGetLastError() << std::endl;
+//        closesocket(client_socket);
+//        closesocket(server_socket);
+//        WSACleanup();
+//        return -1;
+//    }
+//
+//    std::cout << "Data received from client: " << bytes_received << " bytes" << std::endl;
+//
+//    // Step 7: Interpret the data as a vector of integers
+//    std::vector<int> received_data(bytes_received / sizeof(int));
+//    std::memcpy(received_data.data(), buffer, bytes_received);
+//
+//    // Step 8: Display the received integers
+//    std::cout << "Received integers:" << std::endl;
+//    for (int value : received_data) {
+//        std::cout << value << " ";
+//    }
+//    std::cout << std::endl;
+//
+//    // Step 9: Close the client socket and clean up
+//    closesocket(client_socket);
+//    closesocket(server_socket);
+//    WSACleanup();
+//
+//    return 0;
+//}

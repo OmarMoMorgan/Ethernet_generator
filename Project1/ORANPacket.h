@@ -27,7 +27,7 @@ private:
 
 	std::vector<std::vector<uint8_t>> frameVector;
 	//make packet header
-	void MakeHeader(int packetID); //this will make the header for each packet
+	void MakeHeader(int packetID,int flagSize); //this will make the header for each packet
 	void MakeSmallHeader(int packetID);
 	void MakeIQPacketData(int packetID);
 	//void ReadDataIntoVector(); //this will read the data that is coming from file

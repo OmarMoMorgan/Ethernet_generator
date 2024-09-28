@@ -107,9 +107,14 @@ void EthernetGenerator::GeneratePacketsWithORAN() {
 
 	float time_elapsed = 0;
 	int subFramesCount = captureSizeMs / 1;
-	int frameCount = ceil(captureSizeMs / 10);
+	int frameCount = ceil((float)captureSizeMs / 10);
+
+	std::vector<std::vector<std::vector<uint8_t>>> allFrames(frameCount);
 	//intialized all the frame that will be transmitted 
+
 	ORANPacket* ORANFrames = new ORANPacket[frameCount];
+	//ORANPacket ORANFrames[frameCount];
+	//ORANFrames[2];
 	for (int i = 0; i < frameCount; i++) {
 		ORANFrames[i] = ORANPacket(SCS,MaxNrb,NrbPerPacket,PayloadType,Payload, pars_pointer);
 	}
@@ -118,20 +123,26 @@ void EthernetGenerator::GeneratePacketsWithORAN() {
 	int packetInFrameCounter = 0;
 	int frameCounterSending = 0;
 
-	std::vector<std::vector<std::vector<uint8_t>>> allFrames(frameCount);
+	
 
 	for (int j = 0; j < frameCount; j++) {
 		std::vector<std::vector<uint8_t>> OranPacket = ORANFrames[j].GeneratePackets();
 		allFrames[j] = OranPacket;
 	}
 	
-
+	int subframesCounter = 0;
 	while (1) {
-		if (frameCounterSending >= frameCount) {
+		if (subframesCounter >= subFramesCount) {
+			//print ifg till everything is done
+			std::cout << subframesCounter << std::endl;
+			float BytesCount = ((captureSizeMs * 10e-3) - time_elapsed) * byteRate;
+			std::vector<uint8_t> dataIFG(12, IFG);
+			parser.WriteVector(dataIFG);
+			std::cout << BytesCount << std::endl;
 			return;
 		}
 		std::vector<uint8_t> etherPayLoadVec = ecpriPacker.GetEcpri(allFrames[frameCounterSending][packetInFrameCounter]);
-		EthernetPacket ethPacket = EthernetPacket(srcMacAdress, destMacAdress, etherPayLoadVec, 25);
+		EthernetPacket ethPacket = EthernetPacket(srcMacAdress, destMacAdress, etherPayLoadVec, 0xAEFE);
 		//EthernetPacket* packet_arr = new EthernetPacket[frameCount];
 		//the numbers below are generated basaed on nothing shoudl be modified
 		//EthernetPacket* packet_arr = new EthernetPacket[BurstSize];  //(srcMacAdress,destMacAdress,2,50,25);
@@ -163,11 +174,15 @@ void EthernetGenerator::GeneratePacketsWithORAN() {
 
 		//return
 		//}
-		time_elapsed += BurstPeriodicty_us * 1e-6;
+		//time_elapsed += BurstPeriodicty_us * 1e-6;
 
 		packetInFrameCounter++;
 
-		if (packetInFrameCounter >= allFrames[frameCounterSending][packetInFrameCounter].size()) {
+		if (packetInFrameCounter % (allFrames[frameCounterSending].size() / 10) == 0) {
+			subframesCounter++;
+		}
+
+		if (packetInFrameCounter >= allFrames[frameCounterSending].size()) {
 			frameCounterSending++;
 			packetInFrameCounter = 0;
 		}

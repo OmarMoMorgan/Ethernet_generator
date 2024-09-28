@@ -21,6 +21,8 @@ private:
 	std::ofstream WriteFileStream;
 	std::ifstream readIQData;
 
+	std::vector<uint8_t> stringToHex(const std::string& hexStr);
+
 
 	//ethernet_Generation_data
 public:
@@ -36,6 +38,7 @@ public:
 	void CloseFileRead();
 	void OpenFileIQ(const std::string& filename);
 	void CloseFileIQ();
+	void WriteVector(std::vector<uint8_t> data);
 	std::vector<uint8_t> ReadIQData(int linesToRead);
 	//void ReadFile()
 };

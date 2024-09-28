@@ -10,7 +10,7 @@ EthernetPacket::EthernetPacket() {
 EthernetPacket::EthernetPacket(std::vector<uint8_t> srcMacAdress_,
 							   std::vector<uint8_t> destMacAdress_,
 							   std::vector<uint8_t> payLoad_, 
-							   uint8_t etherType_) 
+							   uint16_t etherType_) 
 {
 	srcMacAdress = std::vector<uint8_t>(4);
 	destMacAdress = std::vector<uint8_t>(4);
@@ -53,7 +53,7 @@ std::vector<uint8_t> EthernetPacket::GetPacket() {
 	//this funciton just returns the packet
 	//pass
 	short int payLoadSize = payLoad.size();
-	std::cout <<"paylaod size is " << payLoadSize << "\n";
+	//std::cout <<"paylaod size is " << payLoadSize << "\n";
 	//dest adress
 	packetResult = std::vector<uint8_t>(18 + payLoad.size());
 	for (uint8_t i = 0; i < destMacAdress.size(); ++i) {
@@ -80,7 +80,7 @@ std::vector<uint8_t> EthernetPacket::GetPacket() {
 	}*/
 	//calaculate CRC
 	uint32_t crc = this->calculateCRC();
-	std::cout << std::hex  << "crc os " << crc << "\n";
+	//std::cout << std::hex  << "crc os " << crc << "\n";
 	for (uint8_t i = 0; i < 4; ++i) {
 		packetResult[payLoadSize + 14 + i] = (crc >> (24-8*(i)) & 0xff);
 	}
